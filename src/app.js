@@ -26,6 +26,8 @@ app.use(session({
 
 // Use the imported routes
 app.get('/', (req, res) => res.redirect('/tasks')); // Redirect root route to /tasks
+app.get('/session-debug', (req, res) => res.json(req.session));
+app.get('/debug-session', (req, res) => res.json(req.session));
 app.use(authRoutes); // Use authentication routes
 app.use(taskRoutes); // Use task management routes
 
