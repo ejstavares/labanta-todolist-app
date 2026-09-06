@@ -1,0 +1,46 @@
+<%- include('partials/header') %>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 mb-0">Detalhes da Tarefa</h1>
+  <a href="/tasks" class="btn btn-sm btn-outline-secondary">
+    <i class="bi bi-arrow-left"></i> Voltar
+  </a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h2 class="h5 task-title <%= task.is_done ? 'done' : '' %>"><%= task.title %></h2>
+    <% if (task.is_done) { %>
+      <span class="badge bg-success mb-3">Concluída</span>
+    <% } else { %>
+      <span class="badge bg-warning text-dark mb-3">Pendente</span>
+    <% } %>
+
+    <dl class="row mb-0">
+      <dt class="col-sm-3">Descrição</dt>
+      <dd class="col-sm-9"><%= task.description || '—' %></dd>
+
+      <dt class="col-sm-3">Criada em</dt>
+      <dd class="col-sm-9"><%= new Date(task.created_at).toLocaleString('pt-PT') %></dd>
+
+      <dt class="col-sm-3">ID</dt>
+      <dd class="col-sm-9">#<%= task.id %></dd>
+    </dl>
+  </div>
+  <div class="card-footer d-flex gap-2">
+    <a href="/tasks/<%= task.id %>/edit" class="btn btn-primary btn-sm">
+      <i class="bi bi-pencil"></i> Editar
+    </a>
+    <form method="POST" action="/tasks/<%= task.id %>/toggle" class="d-inline">
+      <button class="btn btn-outline-secondary btn-sm">
+        <i class="bi <%= task.is_done ? 'bi-arrow-counterclockwise' : 'bi-check-lg' %>"></i>
+        <%= task.is_done ? 'Reabrir' : 'Concluir' %>
+      </button>
+    </form>
+    <form method="POST" action="/tasks/<%= task.id %>/delete" class="d-inline">
+      <button class="btn btn-outline-danger btn-sm">
+        <i class="bi bi-trash"></i> Apagar
+      </button>
+    </form>
+  </div>
+</div>
+<%- include('partials/footer') %>

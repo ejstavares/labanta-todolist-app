@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+<div class="auth-card card shadow-sm">
+  <div class="card-body">
+    <h1 class="h4 mb-3 text-center">Entrar no TodoList</h1>
+    <% if (error) { %>
+      <div class="alert alert-danger py-2"><%= error %></div>
+    <% } %>
+    <form method="POST" action="/login">
+      <div class="mb-3">
+        <label class="form-label">Utilizador</label>
+        <input name="username" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input name="password" type="password" class="form-control" required />
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Entrar</button>
+    </form>
+    <p class="text-center mt-3 mb-0">Ainda não tens conta? <a href="/register">Criar conta</a></p>
+  </div>
+</div>
+<%- include('partials/footer') %>

@@ -1,0 +1,58 @@
+<%- include('partials/header') %>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 mb-0">As minhas tarefas</h1>
+  <span class="badge bg-secondary"><%= tasks.length %> tarefa(s)</span>
+</div>
+
+<form method="POST" action="/tasks" class="row g-2 mb-4">
+  <div class="col-md-4">
+    <input name="title" class="form-control" placeholder="Título" required />
+  </div>
+  <div class="col-md-6">
+    <input name="description" class="form-control" placeholder="Descrição" />
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary w-100">
+      <i class="bi bi-plus-lg"></i> Adicionar
+    </button>
+  </div>
+</form>
+
+<ul class="list-group shadow-sm">
+<% if (tasks.length === 0) { %>
+  <li class="list-group-item text-center text-muted">Ainda não tens tarefas. Cria a primeira acima.</li>
+<% } %>
+<% tasks.forEach(function(t) { %>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    <div>
+      <span class="task-title <%= t.is_done ? 'done' : '' %>">
+        <strong><%= t.title %></strong><% if (t.description) { %> — <%= t.description %><% } %>
+      </span>
+      <% if (t.is_done) { %>
+        <span class="badge bg-success ms-2">Concluída</span>
+      <% } else { %>
+        <span class="badge bg-warning text-dark ms-2">Pendente</span>
+      <% } %>
+    </div>
+    <div>
+      <a href="/tasks/<%= t.id %>" class="btn btn-sm btn-outline-primary" title="Ver detalhes">
+        <i class="bi bi-eye"></i>
+      </a>
+      <a href="/tasks/<%= t.id %>/edit" class="btn btn-sm btn-outline-secondary" title="Editar">
+        <i class="bi bi-pencil"></i>
+      </a>
+      <form method="POST" action="/tasks/<%= t.id %>/toggle" class="d-inline">
+        <button class="btn btn-sm btn-outline-secondary" title="Concluir/Reabrir">
+          <i class="bi <%= t.is_done ? 'bi-arrow-counterclockwise' : 'bi-check-lg' %>"></i>
+        </button>
+      </form>
+      <form method="POST" action="/tasks/<%= t.id %>/delete" class="d-inline">
+        <button class="btn btn-sm btn-outline-danger" title="Apagar">
+          <i class="bi bi-trash"></i>
+        </button>
+      </form>
+    </div>
+  </li>
+<% }) %>
+</ul>
+<%- include('partials/footer') %>

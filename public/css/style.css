@@ -1,0 +1,21 @@
+.auth-card {
+  max-width: 400px;
+  margin: 40px auto;
+}
+
+.task-title.done {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+body {
+  padding-bottom: 90px; /* espaço para o rodapé fixo não tapar conteúdo */
+}
+
+.footer-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1030;
+}
