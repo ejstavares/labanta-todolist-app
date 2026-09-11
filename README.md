@@ -29,7 +29,7 @@ Cria um ficheiro `.env` a partir de `.env.example` e ajusta as variáveis.
 Cria a base de dados e correr o `schema.sql`:
 
 ```bash
-docker exec -i pg-todolist psql -U postgres -d todolist_js < schema.sql
+docker exec -i todolist-db psql -U postgres -d todolist_js < schema.sql
 ```
 
 ## Arrancar em desenvolvimento

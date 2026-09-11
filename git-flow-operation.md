@@ -1,4 +1,5 @@
-# Git Flow Operation (Guia Prático)
+# Git Flow Operation — TodoList App (Guia Prático)
+
 ## 🔀 Git Flow (Fluxo de Trabalho com Git)
 
 ### O que é Git Flow?
@@ -13,6 +14,8 @@
 O objetivo é:
 
 > Manter o código organizado, previsível e seguro ao longo do ciclo de vida da aplicação.
+
+**No TodoList App:** até agora trabalhámos com uma única branch (`main`) e, na Sessão 2, com branches de feature soltas. O Git Flow organiza isso num processo repetível — o mesmo que qualquer equipa real usa para lançar versões sem quebrar produção.
 
 ---
 
@@ -40,14 +43,13 @@ feature/* → develop → release/* → main -> tag/*
 * Toda mudança deve passar por **review + pipeline**
 * `main` representa sempre código pronto para produção
 
-![Git Flow](images/git-flow.jpeg)
 ---
 
 ## Exemplo prático de Git Flow
 
 ### Cenário
 
-Vamos desenvolver a funcionalidade **login** e lançar a versão `v1.0.0`.
+Vamos desenvolver a funcionalidade **prioridade das tarefas** (`priority` em cada tarefa: baixa/média/alta) e lançar a versão `v1.0.0` do TodoList App.
 
 ---
 
@@ -70,34 +72,34 @@ git push -u origin develop
 git checkout develop
 ```
 ```bash
-git checkout -b feature/login
+git checkout -b feature/task-priority
 ```
 
-Alterar o código (adicionar ficheiro login.py no raiz do projeto), depois:
+Alterar o código (adicionar um comentário `// TODO: campo priority` em `src/routes/tasks.js`, a marcar onde a funcionalidade vai entrar), depois:
 
 ```bash
 git add .
 ```
 
 ```bash
-git commit -m "feat: adiciona funcionalidade de login"
+git commit -m "feat: prepara campo priority nas tarefas"
 ```
 ```bash
-git push -u origin feature/login
+git push -u origin feature/task-priority
 ```
 
 ---
 
 ### 3️⃣ Merge da feature para develop (via Pull/Merge Request)
 
-No GitHub/GitLab:
+No GitHub:
 
 * Criar **Pull Request**
-* `feature/login` → `develop`
+* `feature/task-priority` → `develop`
 * Revisão de código
 * Pipeline CI executa
 
-**Aqui entram:**
+**Aqui entram (ver Sessões 5–9):**
 
 * SAST (SonarQube)
 * testes
@@ -125,9 +127,10 @@ Nesta fase:
 * ajuste de versões
 * documentação
 
-- Alterar ficheiro login.py adicionando um comentário, depois:
+Alterar `package.json`, incrementando `"version": "1.0.0"`, depois:
+
 ```bash
-git add . && git commit -m "chore: prepara release 1.0.0"
+git add . && git commit -m "feature: prepara release 1.0.0"
 ```
 ```bash
 git push -u origin release/1.0.0
@@ -137,7 +140,7 @@ git push -u origin release/1.0.0
 
 ### 5️⃣ Merge da release para main (produção)
 
-No GitHub/GitLab:
+No GitHub:
 
 * Pull Request
 * `release/1.0.0` → `main`
@@ -153,11 +156,11 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-**A tag dispara o CI/CD** (ex.: build e deploy).
+**A tag dispara o CI/CD** (ex.: build da imagem Docker e deploy — ver Sessão 4 e Sessão 9).
 
 ---
 
-### 6️⃣ Sincronizar main de volta para `main` e `develop`
+### 6️⃣ Sincronizar main de volta para `develop`
 
 ```bash
 git checkout develop
@@ -177,7 +180,7 @@ Garante que `develop` contém tudo o que está em produção.
 
 ### Cenário
 
-Bug crítico encontrado em produção (`main`).
+Bug crítico encontrado em produção (`main`): uma tarefa de outro utilizador consegue ser vista por IDOR (ver Exercício 6 da Sessão 1).
 
 ```bash
 git checkout main
@@ -186,44 +189,41 @@ git checkout main
 git pull
 ```
 ```bash
-git checkout -b hotfix/fix-login-redirect
+git checkout -b hotfix/fix-task-idor
 ```
 
-Corrigir bug, alterando login.py, depois:
+Corrigir o bug, alterando `src/routes/tasks.js`, depois:
 
 ```bash
-git add . && git commit -m "fix: corrige redirect no login"
+git add . && git commit -m "fix: valida owner_id antes de devolver a tarefa"
 ```
 ```bash
-git push -u origin hotfix/fix-login-redirect
+git push -u origin hotfix/fix-task-idor
 ```
 
 Depois:
 
-* Merge para `main` (No GitHub/GitLab)
-* Tag `v1.0.1`
-    * ```bash
-      git tag v1.0.1
-    ```
-* push Tag `v1.0.1` para o repositório:
-    * ```bash
-      git push origin v1.0.1
-    ```
-* Merge também para `develop` e `push`:
-    * ```bash
-      git checkout develop
-        ```
-    * ```bash
-       git pull
-        ```
+* Merge para `main` (no GitHub)
+* Tag `v1.0.1`:
 
-    * ```bash
-      git merge hotfix/fix-login-redirect
-        ```
+```bash
+git tag v1.0.1
+```
 
-    * ```bash
-      git push origin develop
-        ```
+* Push da tag `v1.0.1` para o repositório:
+
+```bash
+git push origin v1.0.1
+```
+
+* Merge também para `develop` e push:
+
+```bash
+git checkout develop
+git pull
+git merge hotfix/fix-task-idor
+git push origin develop
+```
 
 ---
 
@@ -231,9 +231,8 @@ Depois:
 
 ### Porque Git Flow ajuda na segurança?
 
-* Obriga a utlização de **Pull Requests**
+* Obriga à utilização de **Pull Requests**
 * Facilita:
-
   * revisão de código
   * execução de SAST/DAST
   * bloqueio de código inseguro
@@ -243,13 +242,23 @@ Depois:
 
 ---
 
-## Resumindo:
+## Resumindo
 
 * `main` → produção
 * `develop` → integração contínua
 * `feature/*` → desenvolvimento
 * `release/*` → estabilização
 * `hotfix/*` → urgências
+
+---
+
+## Exercícios Práticos
+
+1. Criar a branch `develop` a partir da `main` e enviá-la para o GitHub
+2. Criar `feature/task-priority`, fazer uma pequena alteração e abrir Pull Request para `develop`
+3. Criar `release/1.0.0` a partir da `develop`, ajustar a versão e abrir Pull Request para `main`
+4. Criar a tag `v1.0.0` depois do merge e sincronizar `develop` com `main`
+5. Simular um hotfix (`hotfix/fix-task-idor`) a partir da `main`, com tag `v1.0.1` e merge de volta para `develop`
 
 ---
 
