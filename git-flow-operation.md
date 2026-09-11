@@ -43,6 +43,8 @@ feature/* → develop → release/* → main -> tag/*
 * Toda mudança deve passar por **review + pipeline**
 * `main` representa sempre código pronto para produção
 
+
+![Git Flow](images/git-flow.jpeg)
 ---
 
 ## Exemplo prático de Git Flow
