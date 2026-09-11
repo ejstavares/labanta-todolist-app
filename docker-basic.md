@@ -574,5 +574,3 @@ Este README serve como:
 * guia de formação
 * material de apoio
 * referência prática pós-formação
-
-Aproveite!
