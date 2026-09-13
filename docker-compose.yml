@@ -1,0 +1,14 @@
+services:
+  todolist-app:
+    container_name: todolist-app
+    build: .
+    ports: 
+    - "3000:3000"
+    env_file: .env
+    networks:
+      - network-postgres
+
+networks:
+  network-postgres:
+    external: true
+      
