@@ -8,9 +8,10 @@ router.get('/tasks', requireAuth, async (req, res) => {
   // VULNERÁVEL: filtra pelo "userId" vindo da query string (?userId=), não pela sessão —
   // por defeito mostra as tarefas do próprio, mas basta mudar o valor na URL para ver
   // a lista de outro utilizador (IDOR). Query também por concatenação (SQL Injection).
-  const userId = req.query.userId || req.session.userId; // fallback para compatibilidade com a versão anterior
-  const query = `SELECT tasks.*, users.username AS owner_username FROM tasks JOIN users ON tasks.owner_id = users.id WHERE owner_id = ${userId} ORDER BY tasks.created_at DESC`;
-  const result = await pool.query(query);
+  const userId = req.session.userId; // fallback para compatibilidade com a versão anterior
+
+  const query = `SELECT tasks.*, users.username AS owner_username FROM tasks JOIN users ON tasks.owner_id = users.id WHERE owner_id = $1 ORDER BY tasks.created_at DESC`;
+  const result = await pool.query(query, [userId]);
   res.render('tasks', { tasks: result.rows, username: req.session.username, userId });
 });
 
@@ -20,8 +21,8 @@ router.post('/tasks', requireAuth, async (req, res) => {
   // (?userId=), em vez da sessão autenticada — basta mudar o valor para criar tarefas
   // em nome de outro utilizador. Query também continua por concatenação (SQL Injection).
   const userId = req.query.userId;
-  const query = `INSERT INTO tasks (owner_id, title, description) VALUES (${userId}, '${title}', '${description}')`;
-  await pool.query(query);
+  const query = `INSERT INTO tasks (owner_id, title, description) VALUES ($1, $2, $3)`;
+  await pool.query(query, [userId, title, description]);
   res.redirect('/tasks');
 });
 
